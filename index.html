@@ -1,10 +1,9 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LAB_TERMINAL // GEN_ART_GALLERY</title>
+    <title>KRUTHIK // LAB_TERMINAL</title>
     <style>
         * {
             box-sizing: border-box;
@@ -42,7 +41,7 @@
 
         .gallery-grid {
             display: grid;
-            grid-template-cols: 1fr;
+            grid-template-columns: 1fr;
             gap: 12px;
         }
 
@@ -88,6 +87,7 @@
             aspect-ratio: 1 / 1;
             background: #050607;
             overflow: hidden;
+            min-height: 280px; /* Guarantees container space even during slow loads */
         }
 
         canvas {
@@ -141,12 +141,11 @@
 <body>
 
     <header>
-        <div>SYS_CORE // GEN_ART_MATRIX_V4.0</div>
-        <div>STATUS: <span class="status-flash">ACTIVE_RUN</span> // TOKENS: LMTD</div>
+        <div>KRUTHIK // CORE_ENGINE_MATRIX_V4.1</div>
+        <div>STATUS: <span class="status-flash">ACTIVE_RUN</span></div>
     </header>
 
     <div class="gallery-grid">
-        <!-- PANEL 1: FLOW FIELD -->
         <div class="panel">
             <div class="panel-header">
                 <span>01 // VECTOR_FLOW_FIELD</span>
@@ -156,14 +155,13 @@
                 <canvas id="canvas1"></canvas>
             </div>
             <div class="panel-footer">
-                <div class="telemetry" id="tele1">SEED: 0x8A3F // PARTICLES: 400 // FORCE: 0.05</div>
+                <div class="telemetry" id="tele1">SEED: 0x8A3F // PARTICLES: 350</div>
                 <div class="controls">
-                    <button onclick="art1.reset()">REGEN</button>
+                    <button onclick="window.art1?.reset()">REGEN</button>
                 </div>
             </div>
         </div>
 
-        <!-- PANEL 2: CONSTELLATION NETWORK -->
         <div class="panel">
             <div class="panel-header">
                 <span>02 // NODE_PROXIMITY_MESH</span>
@@ -173,14 +171,13 @@
                 <canvas id="canvas2"></canvas>
             </div>
             <div class="panel-footer">
-                <div class="telemetry" id="tele2">NODES: 60 // MAX_DIST: 75px // KINETIC_LINK</div>
+                <div class="telemetry" id="tele2">NODES: 55 // MAX_DIST: 60px</div>
                 <div class="controls">
-                    <button onclick="art2.reset()">REGEN</button>
+                    <button onclick="window.art2?.reset()">REGEN</button>
                 </div>
             </div>
         </div>
 
-        <!-- PANEL 3: KINETIC FIELD MATRIX -->
         <div class="panel">
             <div class="panel-header">
                 <span>03 // ROTATIONAL_ANGULAR_GRID</span>
@@ -190,14 +187,13 @@
                 <canvas id="canvas3"></canvas>
             </div>
             <div class="panel-footer">
-                <div class="telemetry" id="tele3">RESOLUTION: 18x18 // PROXIMITY_WARP // RAD_0.34</div>
+                <div class="telemetry" id="tele3">RESOLUTION: 15x15 // PROXIMITY_WARP</div>
                 <div class="controls">
-                    <button onclick="art3.reset()">REGEN</button>
+                    <button onclick="window.art3?.reset()">REGEN</button>
                 </div>
             </div>
         </div>
 
-        <!-- PANEL 4: INTERFERENCE WAVEFRONTS -->
         <div class="panel">
             <div class="panel-header">
                 <span>04 // SINUSOIDAL_CONTOUR_MAP</span>
@@ -207,14 +203,13 @@
                 <canvas id="canvas4"></canvas>
             </div>
             <div class="panel-footer">
-                <div class="telemetry" id="tele4">WAVES: 3 // FREQ_MOD: 0.02 // RIPPLE_ISOMETRIC</div>
+                <div class="telemetry" id="tele4">WAVES: 3 // FREQ_MOD: 0.02</div>
                 <div class="controls">
-                    <button onclick="art4.reset()">REGEN</button>
+                    <button onclick="window.art4?.reset()">REGEN</button>
                 </div>
             </div>
         </div>
 
-        <!-- PANEL 5: CHAOTIC ATTRACTOR -->
         <div class="panel">
             <div class="panel-header">
                 <span>05 // CLIFFORD_ORBIT_ATTRACTOR</span>
@@ -224,14 +219,13 @@
                 <canvas id="canvas5"></canvas>
             </div>
             <div class="panel-footer">
-                <div class="telemetry" id="tele5">ITERATIONS: 800/FR // A: -1.4, B: 1.6, C: 1.0, D: 0.7</div>
+                <div class="telemetry" id="tele5">ITERATIONS: 550/FR // ATTRACT_MATH</div>
                 <div class="controls">
-                    <button onclick="art5.reset()">REGEN</button>
+                    <button onclick="window.art5?.reset()">REGEN</button>
                 </div>
             </div>
         </div>
 
-        <!-- PANEL 6: AGENT TRAIL SIMULATOR -->
         <div class="panel">
             <div class="panel-header">
                 <span>06 // PHYSARUM_LIGHT_AGENTS</span>
@@ -241,40 +235,37 @@
                 <canvas id="canvas6"></canvas>
             </div>
             <div class="panel-footer">
-                <div class="telemetry" id="tele6">AGENTS: 300 // EVAP_RATE: 0.04 // STEER_ROT</div>
+                <div class="telemetry" id="tele6">AGENTS: 240 // EVAP_RATE: 0.08</div>
                 <div class="controls">
-                    <button onclick="art6.reset()">REGEN</button>
+                    <button onclick="window.art6?.reset()">REGEN</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Setup helper to manage pixel ratios smoothly across devices (especially mobile retina displays)
-        function setupCanvas(canvasId) {
-            const canvas = document.getElementById(canvasId);
-            const ctx = canvas.getContext('2d');
+        // Bulletproof sizing engine that protects against mobile render delays
+        function syncCanvasDimensions(canvas, ctx) {
             const container = canvas.parentElement;
+            const dpr = window.devicePixelRatio || 1;
+            const currentLogicalWidth = container.clientWidth;
             
-            function resize() {
-                const rect = container.getBoundingClientRect();
-                const dpr = window.devicePixelRatio || 1;
-                canvas.width = rect.width * dpr;
-                canvas.height = rect.width * dpr; // Maintain 1:1 Aspect ratio
+            if (currentLogicalWidth === 0) return false; // Layout isn't painted yet
+
+            // Only trigger layout updates if sizing has changed or hasn't been set
+            if (canvas.width !== currentLogicalWidth * dpr) {
+                canvas.width = currentLogicalWidth * dpr;
+                canvas.height = currentLogicalWidth * dpr;
+                canvas.style.width = currentLogicalWidth + 'px';
+                canvas.style.height = currentLogicalWidth + 'px';
                 ctx.scale(dpr, dpr);
-                canvas.style.width = rect.width + 'px';
-                canvas.style.height = rect.width + 'px';
+                return true; 
             }
-            
-            resize();
-            window.addEventListener('resize', resize);
-            return { canvas, ctx, container };
+            return false;
         }
 
-        // Shared touch/mouse tracking system per canvas container
         function trackInput(container) {
             const input = { x: null, y: null, active: false };
-            
             function updateCoords(e) {
                 const rect = container.getBoundingClientRect();
                 const clientX = e.touches ? e.touches[0].clientX : e.clientX;
@@ -282,121 +273,106 @@
                 input.x = clientX - rect.left;
                 input.y = clientY - rect.top;
             }
-
             container.addEventListener('mousemove', updateCoords);
             container.addEventListener('mouseenter', () => input.active = true);
             container.addEventListener('mouseleave', () => { input.active = false; input.x = null; input.y = null; });
-
             container.addEventListener('touchstart', (e) => { input.active = true; updateCoords(e); }, { passive: true });
             container.addEventListener('touchmove', (e) => { updateCoords(e); }, { passive: true });
             container.addEventListener('touchend', () => { input.active = false; input.x = null; input.y = null; });
-
             return input;
         }
 
-        // ==========================================
-        // ART SYSTEM 1: VECTOR FLOW FIELD
-        // ==========================================
         class VectorFlowField {
             constructor() {
-                const setup = setupCanvas('canvas1');
-                this.canvas = setup.canvas;
-                this.ctx = setup.ctx;
-                this.input = trackInput(setup.container);
+                this.canvas = document.getElementById('canvas1');
+                this.ctx = this.canvas.getContext('2d');
+                this.input = trackInput(this.canvas.parentElement);
                 this.particles = [];
-                this.reset();
+                this.initialized = false;
             }
             reset() {
                 this.particles = [];
-                const width = this.canvas.width / (window.devicePixelRatio || 1);
+                const w = this.canvas.width / (window.devicePixelRatio || 1);
+                if(w <= 0) return;
                 for(let i=0; i<350; i++) {
                     this.particles.push({
-                        x: Math.random() * width,
-                        y: Math.random() * width,
-                        vx: 0, vy: 0,
-                        life: Math.random() * 100 + 50,
+                        x: Math.random() * w, y: Math.random() * w,
+                        vx: 0, vy: 0, life: Math.random() * 100 + 50,
                         color: Math.random() > 0.5 ? '#84cc16' : '#4b5563'
                     });
                 }
-                document.getElementById('tele1').innerText = `SEED: 0x${Math.floor(Math.random()*65535).toString(16).toUpperCase()} // PARTICLES: 350 // FLUID_MODE`;
+                this.initialized = true;
+                document.getElementById('tele1').innerText = `SEED: 0x${Math.floor(Math.random()*65535).toString(16).toUpperCase()} // PARTICLES: 350`;
             }
             update() {
+                const resized = syncCanvasDimensions(this.canvas, this.ctx);
+                if (resized || !this.initialized) this.reset();
+                
                 const w = this.canvas.width / (window.devicePixelRatio || 1);
+                if (w <= 0) return;
+
                 this.ctx.fillStyle = 'rgba(5, 6, 7, 0.06)';
                 this.ctx.fillRect(0, 0, w, w);
 
                 this.particles.forEach(p => {
                     let angle = (Math.sin(p.x * 0.01) + Math.cos(p.y * 0.01)) * Math.PI * 2;
                     if(this.input.active && this.input.x !== null) {
-                        let dx = this.input.x - p.x;
-                        let dy = this.input.y - p.y;
-                        let dist = Math.hypot(dx, dy);
-                        if(dist < 100) {
-                            angle += Math.atan2(dy, dx) + Math.PI/2;
-                        }
+                        let dx = this.input.x - p.x; let dy = this.input.y - p.y;
+                        if(Math.hypot(dx, dy) < 100) angle += Math.atan2(dy, dx) + Math.PI/2;
                     }
-                    p.vx += Math.cos(angle) * 0.12;
-                    p.vy += Math.sin(angle) * 0.12;
-                    p.x += p.vx;
-                    p.y += p.vy;
-                    p.vx *= 0.95; p.vy *= 0.95;
-                    p.life--;
+                    p.vx += Math.cos(angle) * 0.12; p.vy += Math.sin(angle) * 0.12;
+                    p.x += p.vx; p.y += p.vy;
+                    p.vx *= 0.95; p.vy *= 0.95; p.life--;
 
                     this.ctx.fillStyle = p.color;
                     this.ctx.fillRect(p.x, p.y, 1.5, 1.5);
 
                     if(p.life <= 0 || p.x < 0 || p.x > w || p.y < 0 || p.y > w) {
-                        p.x = Math.random() * w;
-                        p.y = Math.random() * w;
-                        p.vx = 0; p.vy = 0;
-                        p.life = Math.random() * 100 + 50;
+                        p.x = Math.random() * w; p.y = Math.random() * w;
+                        p.vx = 0; p.vy = 0; p.life = Math.random() * 100 + 50;
                     }
                 });
             }
         }
 
-        // ==========================================
-        // ART SYSTEM 2: NODE PROXIMITY MESH
-        // ==========================================
         class NodeProximityMesh {
             constructor() {
-                const setup = setupCanvas('canvas2');
-                this.canvas = setup.canvas;
-                this.ctx = setup.ctx;
-                this.input = trackInput(setup.container);
+                this.canvas = document.getElementById('canvas2');
+                this.ctx = this.canvas.getContext('2d');
+                this.input = trackInput(this.canvas.parentElement);
                 this.nodes = [];
-                this.reset();
+                this.initialized = false;
             }
             reset() {
                 this.nodes = [];
                 const w = this.canvas.width / (window.devicePixelRatio || 1);
+                if(w <= 0) return;
                 for(let i=0; i<55; i++) {
                     this.nodes.push({
                         x: Math.random() * w, y: Math.random() * w,
                         vx: (Math.random() - 0.5) * 0.8, vy: (Math.random() - 0.5) * 0.8
                     });
                 }
+                this.initialized = true;
             }
             update() {
+                const resized = syncCanvasDimensions(this.canvas, this.ctx);
+                if (resized || !this.initialized) this.reset();
+
                 const w = this.canvas.width / (window.devicePixelRatio || 1);
+                if (w <= 0) return;
+
                 this.ctx.clearRect(0, 0, w, w);
-                
-                let targetX = this.input.x;
-                let targetY = this.input.y;
 
                 this.nodes.forEach((n, i) => {
                     n.x += n.vx; n.y += n.vy;
                     if(n.x < 0 || n.x > w) n.vx *= -1;
                     if(n.y < 0 || n.y > w) n.vy *= -1;
 
-                    if(this.input.active && targetX !== null) {
-                        let dx = targetX - n.x;
-                        let dy = targetY - n.y;
+                    if(this.input.active && this.input.x !== null) {
+                        let dx = this.input.x - n.x; let dy = this.input.y - n.y;
                         let d = Math.hypot(dx, dy);
-                        if(d < 80) {
-                            n.x += (dx / d) * 0.5;
-                            n.y += (dy / d) * 0.5;
-                        }
+                        if(d < 80) { n.x += (dx / d) * 0.5; n.y += (dy / d) * 0.5; }
                     }
 
                     this.ctx.fillStyle = '#374151';
@@ -409,39 +385,33 @@
                             let alpha = (1 - dist / 60) * 0.35;
                             this.ctx.strokeStyle = `rgba(132, 204, 22, ${alpha})`;
                             this.ctx.lineWidth = 0.8;
-                            this.ctx.beginPath();
-                            this.ctx.moveTo(n.x, n.y);
-                            this.ctx.lineTo(n2.x, n2.y);
-                            this.ctx.stroke();
+                            this.ctx.beginPath(); this.ctx.moveTo(n.x, n.y); this.ctx.lineTo(n2.x, n2.y); this.ctx.stroke();
                         }
                     }
                 });
             }
         }
 
-        // ==========================================
-        // ART SYSTEM 3: ROTATIONAL ANGULAR GRID
-        // ==========================================
         class RotationalGrid {
             constructor() {
-                const setup = setupCanvas('canvas3');
-                this.canvas = setup.canvas;
-                this.ctx = setup.ctx;
-                this.input = trackInput(setup.container);
+                this.canvas = document.getElementById('canvas3');
+                this.ctx = this.canvas.getContext('2d');
+                this.input = trackInput(this.canvas.parentElement);
                 this.angleOffset = 0;
             }
             reset() { this.angleOffset = Math.random() * 10; }
             update() {
+                syncCanvasDimensions(this.canvas, this.ctx);
                 const w = this.canvas.width / (window.devicePixelRatio || 1);
+                if (w <= 0) return;
+
                 this.ctx.clearRect(0, 0, w, w);
-                const cols = 15; const rows = 15;
-                const spacing = w / (cols + 1);
+                const cols = 15; const rows = 15; const spacing = w / (cols + 1);
                 this.angleOffset += 0.01;
 
                 for(let c=0; c<cols; c++) {
                     for(let r=0; r<rows; r++) {
-                        let x = spacing + c * spacing;
-                        let y = spacing + r * spacing;
+                        let x = spacing + c * spacing; let y = spacing + r * spacing;
                         let angle = this.angleOffset;
 
                         if(this.input.active && this.input.x !== null) {
@@ -450,88 +420,93 @@
                             angle += (c * 0.1) + (r * 0.1);
                         }
 
-                        this.ctx.save();
-                        this.ctx.translate(x, y);
-                        this.ctx.rotate(angle);
+                        this.ctx.save(); this.ctx.translate(x, y); this.ctx.rotate(angle);
                         this.ctx.strokeStyle = (c+r) % 3 === 0 ? '#84cc16' : '#1f2937';
                         this.ctx.lineWidth = 1;
-                        this.ctx.beginPath();
-                        this.ctx.moveTo(-6, 0);
-                        this.ctx.lineTo(6, 0);
-                        this.ctx.moveTo(4, -2);
-                        this.ctx.lineTo(6, 0);
-                        this.ctx.lineTo(4, 2);
-                        this.ctx.stroke();
-                        this.ctx.restore();
+                        this.ctx.beginPath(); this.ctx.moveTo(-6, 0); this.ctx.lineTo(6, 0);
+                        this.ctx.moveTo(4, -2); this.ctx.lineTo(6, 0); this.ctx.lineTo(4, 2);
+                        this.ctx.stroke(); this.ctx.restore();
                     }
                 }
             }
         }
 
-        // ==========================================
-        // ART SYSTEM 4: SINUSOIDAL CONTOUR MAP
-        // ==========================================
         class SinusoidalContour {
             constructor() {
-                const setup = setupCanvas('canvas4');
-                this.canvas = setup.canvas;
-                this.ctx = setup.ctx;
-                this.input = trackInput(setup.container);
+                this.canvas = document.getElementById('canvas4');
+                this.ctx = this.canvas.getContext('2d');
+                this.input = trackInput(this.canvas.parentElement);
                 this.time = 0;
             }
             reset() { this.time = Math.random() * 100; }
             update() {
+                syncCanvasDimensions(this.canvas, this.ctx);
                 const w = this.canvas.width / (window.devicePixelRatio || 1);
+                if (w <= 0) return;
+
                 this.ctx.clearRect(0, 0, w, w);
                 this.time += 0.02;
-                
                 let mx = this.input.x !== null ? this.input.x : w/2;
                 let my = this.input.y !== null ? this.input.y : w/2;
-
-                this.ctx.strokeStyle = 'rgba(75, 85, 99, 0.4)';
-                this.ctx.lineWidth = 1;
 
                 for(let r = 10; r < w * 0.8; r += 14) {
                     this.ctx.beginPath();
                     for(let a = 0; a < Math.PI * 2; a += 0.08) {
-                        let x = mx + Math.cos(a) * r;
-                        let y = my + Math.sin(a) * r;
-                        
-                        // Wave distortion mapping
+                        let x = mx + Math.cos(a) * r; let y = my + Math.sin(a) * r;
                         let distortion = Math.sin(a * 5 + this.time) * Math.cos(r * 0.03) * 6;
-                        let dx = x + Math.cos(a) * distortion;
-                        let dy = y + Math.sin(a) * distortion;
-
-                        if (a === 0) this.ctx.moveTo(dx, dy);
-                        else this.ctx.lineTo(dx, dy);
+                        let dx = x + Math.cos(a) * distortion; let dy = y + Math.sin(a) * distortion;
+                        if (a === 0) this.ctx.moveTo(dx, dy); else this.ctx.lineTo(dx, dy);
                     }
                     this.ctx.closePath();
-                    // Highlights certain contour bands dynamically
                     this.ctx.strokeStyle = Math.floor(r) % 3 === 0 ? 'rgba(132, 204, 22, 0.6)' : 'rgba(31, 41, 55, 0.7)';
                     this.ctx.stroke();
                 }
             }
         }
 
-        // ==========================================
-        // ART SYSTEM 5: CLIFFORD ORBIT ATTRACTOR
-        // ==========================================
         class CliffordAttractor {
             constructor() {
-                const setup = setupCanvas('canvas5');
-                this.canvas = setup.canvas;
-                this.ctx = setup.ctx;
-                this.input = trackInput(setup.container);
-                this.reset();
+                this.canvas = document.getElementById('canvas5');
+                this.ctx = this.canvas.getContext('2d');
+                this.input = trackInput(this.canvas.parentElement);
+                this.initialized = false;
             }
             reset() {
-                this.a = -1.3 + Math.random() * 0.4;
-                this.b = 1.5 + Math.random() * 0.4;
-                this.c = 0.9 + Math.random() * 0.3;
-                this.d = 0.6 + Math.random() * 0.3;
-                this.currentX = 0.1;
-                this.currentY = 0.1;
+                this.a = -1.3 + Math.random() * 0.4; this.b = 1.5 + Math.random() * 0.4;
+                this.c = 0.9 + Math.random() * 0.3; this.d = 0.6 + Math.random() * 0.3;
+                this.currentX = 0.1; this.currentY = 0.1;
                 
-                const dpr = window.devicePixelRatio || 1;
-                this.ctx.fillStyle = '#050607';
-      
+                const w = this.canvas.width / (window.devicePixelRatio || 1);
+                if(w > 0) {
+                    this.ctx.fillStyle = '#050607';
+                    this.ctx.fillRect(0, 0, w, w);
+                    this.initialized = true;
+                }
+                document.getElementById('tele5').innerText = `A: ${this.a.toFixed(2)} // B: ${this.b.toFixed(2)} // ATTRACT_MATH`;
+            }
+            update() {
+                const resized = syncCanvasDimensions(this.canvas, this.ctx);
+                if (resized || !this.initialized) this.reset();
+
+                const w = this.canvas.width / (window.devicePixelRatio || 1);
+                if (w <= 0) return;
+
+                this.ctx.fillStyle = 'rgba(5,6,7,0.02)';
+                this.ctx.fillRect(0,0,w,w);
+
+                let mxMod = this.input.active && this.input.x !== null ? (this.input.x / w) * 0.1 : 0;
+                this.ctx.fillStyle = 'rgba(132, 204, 22, 0.65)';
+                
+                for (let i = 0; i < 550; i++) {
+                    let nextX = Math.sin((this.a + mxMod) * this.currentY) + this.c * Math.cos((this.a + mxMod) * this.currentX);
+                    let nextY = Math.sin(this.b * this.currentX) + this.d * Math.cos(this.b * this.currentY);
+                    this.currentX = nextX; this.currentY = nextY;
+                    let renderX = (this.currentX + 2) * (w / 4); let renderY = (this.currentY + 2) * (w / 4);
+                    this.ctx.fillRect(renderX, renderY, 1, 1);
+                }
+            }
+        }
+
+        class PhysarumLight {
+            constructor() {
+                this.canvas = document.getElementById('c
